@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+
+  app:
+    build: .
+    entrypoint: ./.docker/entrypoint.sh
+    container_name: wa-hospital-backend-app
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    ports:
+      - 3000:3000
+    volumes:
+      - .:/home/node/app
+    networks:
+      - my-network
+    depends_on: 
+      - db-mysql
+      - db-mongo
+
+  db-mysql:
+    image: mysql:8.0.25
+    container_name: wa-hospital-backend-db-mysql
+    restart: always
+    tty: true
+    env_file:
+      - ./.env
+    ports:
+      - '3306:3306'
+    expose:
+      - '3306'
+    volumes:
+      - ./.docker/dbdata:/var/lib/mysql
+    environment:
+      - MYSQL_DATABASE=${TYPEORM_DATABASE}
+      - MYSQL_USERNAME=${TYPEORM_USERNAME}
+      - MYSQL_PASSWORD=${TYPEORM_PASSWORD}
+    networks:
+      - my-network
+
+networks:
+  my-network:
+    driver: bridge
