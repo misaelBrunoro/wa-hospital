@@ -23,6 +23,7 @@ services:
 
   app:
     build: .
+    entrypoint: '/entrypoint.sh'
     container_name: wa-hospital-backend-app
     environment:
       - CHOKIDAR_USEPOLLING=true

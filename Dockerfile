@@ -10,4 +10,5 @@ RUN npm i -g @nestjs/cli@7.6.0
 
 WORKDIR /home/node/app
 
-RUN yarn install && yarn start:dev
+COPY ./.docker/entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
