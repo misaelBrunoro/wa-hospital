@@ -10,4 +10,4 @@ RUN npm i -g @nestjs/cli@7.6.0
 
 WORKDIR /home/node/app
 
-RUN yarn install
+RUN yarn install && yarn start:dev

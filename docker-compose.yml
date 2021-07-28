@@ -1,24 +1,8 @@
 version: '3.8'
 
 services:
-
-  app:
-    build: .
-    command: bash -c 'while !</dev/tcp/db-mysql/3306; do sleep 1; done; npm start; yarn run start:dev'
-    container_name: wa-hospital-backend-app
-    environment:
-      - CHOKIDAR_USEPOLLING=true
-    ports:
-      - 3000:3000
-    expose:
-      - '3000'
-    volumes:
-      - .:/home/node/app
-    depends_on: 
-      - db-mysql
-
   db-mysql:
-    image: mysql:8.0.25
+    image: mysql:8.0.26
     command: --default-authentication-plugin=mysql_native_password
     container_name: wa-hospital-backend-db-mysql
     restart: always
@@ -34,3 +18,25 @@ services:
     environment:
       - MYSQL_DATABASE=${TYPEORM_DATABASE}
       - MYSQL_ROOT_PASSWORD=${TYPEORM_PASSWORD}
+    networks:
+      - my-network
+
+  app:
+    build: .
+    container_name: wa-hospital-backend-app
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    ports:
+      - '3000:3000'
+    expose:
+      - '3000'
+    volumes:
+      - .:/home/node/app
+    networks:
+      - my-network
+    depends_on: 
+      - db-mysql
+
+networks:
+  my-network:
+    driver: bridge
