@@ -18,24 +18,27 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js"
   },
   "dependencies": {
     "@nestjs/common": "^7.6.15",
     "@nestjs/core": "^7.6.15",
     "@nestjs/platform-express": "^7.6.15",
-    "@nestjs/swagger": "^5.0.8",
-    "@nestjs/typeorm": "^8.0.1",
+    "@nestjs/swagger": "^4.8.1",
+    "@nestjs/typeorm": "^7.1.5",
     "class-transformer": "^0.4.0",
     "class-validator": "^0.13.1",
     "dotenv": "^10.0.0",
-    "mysql": "^2.18.1",
+    "mysql2": "^2.2.5",
+    "nestjs-typeorm-paginate": "^2.5.3",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^6.6.6",
     "swagger-ui-express": "^4.1.6",
     "t": "^0.5.1",
-    "typeorm": "^0.2.34"
+    "typeorm": "^0.2.34",
+    "webpack": "^5.47.0"
   },
   "devDependencies": {
     "@nestjs/cli": "^7.6.0",

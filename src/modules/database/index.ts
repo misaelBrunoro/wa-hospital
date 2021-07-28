@@ -15,7 +15,6 @@ const ENV_FILE = dotenv.config().parsed || {};
       database: ENV_FILE.TYPEORM_DATABASE,
       entities: [],
     }),
-    TypeOrmModule.forFeature([])
-  ]
+  ],
 })
 export class DatabaseModule {}
