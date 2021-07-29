@@ -5,10 +5,12 @@ import { json, urlencoded } from 'express';
 import { ValidationPipe } from '@nestjs/common';
 import { join } from 'path';
 import { REQUEST_BODY_LIMIT, VERSION } from './settings';
-import { AppModule } from './modules';
+import { ApplicationModule } from './modules';
 
 async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(
+    ApplicationModule,
+  );
   app.useStaticAssets(join(__dirname, '..', 'public'));
   app.enableCors();
   app.use(json({ limit: REQUEST_BODY_LIMIT }));

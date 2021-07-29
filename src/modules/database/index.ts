@@ -1,6 +1,11 @@
-import { Module } from '@nestjs/common';
+import {
+  Module,
+  OnApplicationBootstrap,
+  OnApplicationShutdown,
+} from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import * as dotenv from 'dotenv';
+import { Connection, getConnectionManager } from 'typeorm';
 
 const ENV_FILE = dotenv.config().parsed || {};
 
@@ -23,4 +28,23 @@ const ENV_FILE = dotenv.config().parsed || {};
     }),
   ],
 })
-export class DatabaseModule {}
+export class DatabaseModule
+  implements OnApplicationBootstrap, OnApplicationShutdown
+{
+  private connection: Connection;
+
+  public async onApplicationBootstrap() {
+    const connectionManager = getConnectionManager();
+    if (connectionManager.has('default')) {
+      this.connection = connectionManager.get('default');
+      await this.connection.runMigrations({
+        transaction: 'all',
+      });
+      console.log('DATABASE READY');
+    }
+  }
+
+  public async onApplicationShutdown() {
+    await this.connection.close();
+  }
+}
