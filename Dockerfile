@@ -11,4 +11,5 @@ RUN npm i -g @nestjs/cli@7.6.0
 WORKDIR /home/node/app
 
 COPY ./.docker/entrypoint.sh /entrypoint.sh
+
 RUN chmod +x /entrypoint.sh
