@@ -7,11 +7,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Exam } from '../exam/exam.model';
-import {
-  ILaboratory,
-  Situation,
-  SituationsArray,
-} from './laboratory.interface';
+import { ILaboratory, Status, StatusArray } from './laboratory.interface';
 
 @Entity()
 export class Laboratory implements ILaboratory {
@@ -30,11 +26,11 @@ export class Laboratory implements ILaboratory {
 
   @Column({
     type: 'enum',
-    enum: SituationsArray,
-    default: `{${Situation.active}}`,
+    enum: StatusArray,
+    default: `{${Status.active}}`,
     array: true,
   })
-  situation: Situation;
+  status: Status;
 
   @ManyToMany(() => Exam)
   @JoinTable()

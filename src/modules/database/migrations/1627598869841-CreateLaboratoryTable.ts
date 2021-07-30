@@ -1,6 +1,10 @@
+import {
+  Status,
+  StatusArray,
+} from '../../app/models/laboratory/laboratory.interface';
 import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 
-export class CreateLaboratoryTable1627497095557 implements MigrationInterface {
+export class CreateLaboratoryTable1627598869841 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
@@ -15,17 +19,18 @@ export class CreateLaboratoryTable1627497095557 implements MigrationInterface {
           },
           {
             name: 'name',
-            type: 'varchar',
+            type: 'varchar(100)',
           },
           {
             name: 'address',
-            type: 'varchar',
+            type: 'varchar(250)',
           },
           {
             name: 'status',
             type: 'enum',
-            enum: ['active', 'inactive'],
-            default: '"enum"',
+            enum: StatusArray,
+            enumName: 'status_lab_num',
+            default: `'${Status.active}'`,
           },
           {
             name: 'created_at',

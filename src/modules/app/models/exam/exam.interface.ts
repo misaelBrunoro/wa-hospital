@@ -3,19 +3,19 @@ export enum Type {
   image = 'image',
 }
 
-export enum Situation {
+export enum Status {
   active = 'active',
   inactive = 'inactive',
 }
 
-export const SituationsArray = [Situation.active, Situation.inactive];
+export const StatusArray = [Status.active, Status.inactive];
 
 export const TypeArray = [Type.clinicalAnalysis, Type.image];
 
 export interface IExam {
   id: number;
   name: string;
-  situation: Situation;
+  status: Status;
   type: Type;
   createdAt: Date;
 }

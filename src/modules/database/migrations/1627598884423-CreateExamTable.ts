@@ -1,6 +1,12 @@
+import {
+  Status,
+  StatusArray,
+  Type,
+  TypeArray,
+} from '../../app/models/exam/exam.interface';
 import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 
-export class CreateExamTable1627497103999 implements MigrationInterface {
+export class CreateExamTable1627598884423 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
@@ -20,14 +26,16 @@ export class CreateExamTable1627497103999 implements MigrationInterface {
           {
             name: 'type',
             type: 'enum',
-            enum: ['clinical analysis', 'image'],
-            default: '"enum"',
+            enum: TypeArray,
+            enumName: 'type_exam_enum',
+            default: `'${Type.clinicalAnalysis}'`,
           },
           {
             name: 'status',
             type: 'enum',
-            enum: ['active', 'inactive'],
-            default: '"enum"',
+            enum: StatusArray,
+            enumName: 'status_exam_enum',
+            default: `'${Status.active}'`,
           },
           {
             name: 'created_at',

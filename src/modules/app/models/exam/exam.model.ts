@@ -4,13 +4,7 @@ import {
   Entity,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import {
-  IExam,
-  Situation,
-  SituationsArray,
-  Type,
-  TypeArray,
-} from './exam.interface';
+import { IExam, Status, StatusArray, Type, TypeArray } from './exam.interface';
 
 @Entity()
 export class Exam implements IExam {
@@ -24,11 +18,11 @@ export class Exam implements IExam {
 
   @Column({
     type: 'enum',
-    enum: SituationsArray,
-    default: `{${Situation.active}}`,
+    enum: StatusArray,
+    default: `{${Status.active}}`,
     array: true,
   })
-  situation: Situation;
+  status: Status;
 
   @Column({
     type: 'enum',

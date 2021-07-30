@@ -6,6 +6,7 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
+    "dev": "yarn ts-node-dev --inspect=0.0.0.0:9229 --respawn --no-notify --transpile-only --no-deps --project tsconfig.dev.json ./src/main.ts",
     "prebuild": "rimraf dist",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
@@ -37,6 +38,7 @@
     "rxjs": "^6.6.6",
     "swagger-ui-express": "^4.1.6",
     "t": "^0.5.1",
+    "ts-node-dev": "^1.1.8",
     "typeorm": "^0.2.34",
     "webpack": "^5.47.0"
   },
