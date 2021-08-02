@@ -1,0 +1,33 @@
+POST http://localhost:3000/laboratories
+Content-Type: application/json
+
+{
+    "name": "Laboratorio Geral",
+    "address": "Rua x Bairro y Numero 3",
+    "status": "active",
+    "exams": [1]
+}
+
+########
+
+GET http://localhost:3000/laboratories
+
+########
+
+GET http://localhost:3000/laboratories/2
+
+
+########
+
+PUT http://localhost:3000/laboratories/2
+Content-Type: application/json
+
+{
+    "name": "Laboratorio Geral",
+    "address": "Rua y Bairro x Numero 3",
+    "status": "inactive",
+    "exams": [{"id": 1}]
+}
+
+########
+DELETE http://localhost:3000/laboratories/1

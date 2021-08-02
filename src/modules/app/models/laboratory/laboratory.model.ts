@@ -28,11 +28,12 @@ export class Laboratory implements ILaboratory {
     type: 'enum',
     enum: StatusArray,
     default: `{${Status.active}}`,
-    array: true,
   })
   status: Status;
 
-  @ManyToMany(() => Exam)
+  @ManyToMany((type) => Exam, (exam: Exam) => exam.laboratoies, {
+    cascade: true,
+  })
   @JoinTable()
   exams: Exam[];
 

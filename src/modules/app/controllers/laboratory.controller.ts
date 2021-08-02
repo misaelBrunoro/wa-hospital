@@ -7,51 +7,55 @@ import {
   ParseIntPipe,
   Post,
   Put,
-  Query,
   ValidationPipe,
 } from '@nestjs/common';
-import { Pagination } from 'nestjs-typeorm-paginate';
-import { DeleteResult, Repository, UpdateResult } from 'typeorm';
+import { ApiNoContentResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { Laboratory } from '../models/laboratory/laboratory.model';
-import { ListValidator } from '../validators/laboratory/list.validator';
-import { InjectRepository } from '@nestjs/typeorm';
 import { LaboratoryValidator } from '../validators/laboratory/laboratory.validator';
-import { ILaboratory } from '../models/laboratory/laboratory.interface';
+import { LaboratoryService } from '../services/laboratory.service';
 
+@ApiTags('Laboratory')
 @Controller('laboratories')
 export class LaboratoryController {
-  constructor(
-    @InjectRepository(Laboratory)
-    private laboratoryRepository: Repository<LaboratoryValidator>,
-  ) {}
+  constructor(private laboratoryService: LaboratoryService) {}
 
-  /*@Get()
-  public async index(
-    @Query() query: ListValidator,
-  ): Promise<Pagination<Laboratory>> {
-    return this.laboratoryService.index(query);
-  }*/
-
-  /*@Post()
-  public async store(
-    @Body(new ValidationPipe()) laboratory: LaboratoryValidator,
-  ): Promise<Laboratory> {
-    const lab = this.laboratoryRepository.create(laboratory);
-    return this.laboratoryRepository.save(lab);
-  }*/
-
-  /*@Put(':id')
-  public async update(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() laboratory: Laboratory,
-  ): Promise<UpdateResult> {
-    return this.laboratoryRepository.update(id, laboratory);
+  @Get()
+  @ApiOkResponse({ type: [Laboratory] })
+  public async index(): Promise<Laboratory[]> {
+    return this.laboratoryService.index();
   }
 
-  /*@Delete(':id')
-  public async destroy(
+  @Get(':id')
+  @ApiOkResponse({ type: Laboratory })
+  public show(@Param('id', ParseIntPipe) id: number): Promise<Laboratory> {
+    return this.laboratoryService.show(id);
+  }
+
+  @Post()
+  @ApiOkResponse({ type: Laboratory })
+  public async store(
+    @Body(
+      new ValidationPipe({
+        errorHttpStatusCode: 422,
+      }),
+    )
+    body: LaboratoryValidator,
+  ): Promise<Laboratory> {
+    return this.laboratoryService.store(body);
+  }
+
+  @Put(':id')
+  @ApiOkResponse({ type: Laboratory })
+  public async update(
     @Param('id', ParseIntPipe) id: number,
-  ): Promise<DeleteResult> {
-    return this.laboratoryService.destroy(id);
-  }*/
+    @Body() body: Laboratory,
+  ): Promise<Laboratory> {
+    return this.laboratoryService.update(id, body);
+  }
+
+  @Delete(':id')
+  @ApiNoContentResponse()
+  public async destroy(@Param('id', ParseIntPipe) id: number): Promise<void> {
+    this.laboratoryService.destroy(id);
+  }
 }

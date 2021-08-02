@@ -33,7 +33,7 @@ export class CreateLaboratoryTable1627598869841 implements MigrationInterface {
             default: `'${Status.active}'`,
           },
           {
-            name: 'created_at',
+            name: 'createdAt',
             type: 'timestamp',
             default: 'CURRENT_TIMESTAMP',
           },

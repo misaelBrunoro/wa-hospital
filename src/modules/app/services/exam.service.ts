@@ -1,90 +1,38 @@
-import {
-  ConflictException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
-import {
-  FindManyOptions,
-  FindOneOptions,
-  Repository,
-  UpdateResult,
-} from 'typeorm';
-import { DeleteResult } from 'typeorm/query-builder/result/DeleteResult';
-import { paginate, Pagination } from 'nestjs-typeorm-paginate';
-import { ListValidator } from '../validators/exam/list.validator';
+import { NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { IExam } from '../models/exam/exam.interface';
 import { Exam } from '../models/exam/exam.model';
 
-@Injectable()
 export class ExamService {
   constructor(
     @InjectRepository(Exam)
     private examRepository: Repository<Exam>,
   ) {}
 
-  async find(options?: FindManyOptions<Exam>): Promise<Exam[]> {
-    return this.examRepository.find(options);
+  public async index(): Promise<Exam[]> {
+    return this.examRepository.find();
   }
 
-  async index(query: ListValidator): Promise<Pagination<Exam>> {
-    const queryBuilder = this.examRepository.createQueryBuilder('Exam');
-    queryBuilder.select(['Exam']);
-
-    if (query.name) {
-      queryBuilder.where(`LOWER(Exam.name) LIKE LOWER('%${query.name}%')`);
-    }
-
-    if (!query.orderBy) query.orderBy = 'Exam.name';
-    if (!query.orderDirection) query.orderDirection = 'ASC';
-
-    queryBuilder.orderBy(
-      query.orderBy,
-      query.orderDirection.toUpperCase() as 'ASC' | 'DESC',
-    );
-
-    return paginate<Exam>(queryBuilder, {
-      page: Number(query.page) + 1,
-      limit: query.limit,
-    });
-  }
-
-  async get(id: number, options?: FindOneOptions<Exam>): Promise<Exam> {
-    const exam = await this.examRepository.findOne(id, options);
+  public async show(id: number): Promise<Exam> {
+    const exam = this.examRepository.findOneOrFail(id);
     if (!exam) throw new NotFoundException('not-found');
     return exam;
   }
 
-  async store(exam: Exam): Promise<Exam> {
-    const isExamAvailable = await this.isUniqueColumnAvailable(
-      'name',
-      exam.name,
-    );
-
-    if (!isExamAvailable) throw new ConflictException('name-unavailable');
-
-    const saved = this.examRepository.save(exam);
-
-    return saved;
+  public async store(body: IExam): Promise<Exam> {
+    const exam = this.examRepository.create(body);
+    return this.examRepository.save(exam);
   }
 
-  async destroy(id: number): Promise<DeleteResult> {
-    return this.examRepository.delete(id);
+  public async update(id: number, body: IExam): Promise<Exam> {
+    await this.examRepository.findOneOrFail(id);
+    this.examRepository.update(id, body);
+    return this.examRepository.findOneOrFail(id);
   }
 
-  async update(id: number, exam: Exam): Promise<UpdateResult> {
-    return this.examRepository.update(id, exam);
-  }
-
-  public async isUniqueColumnAvailable(
-    column: string,
-    value: string,
-  ): Promise<boolean> {
-    const query = this.examRepository
-      .createQueryBuilder('Exam')
-      .select('COUNT(Exam.id) AS count')
-      .where(`Exam.${column} = :value`, { value });
-
-    const result: any = await query.getRawOne();
-    return Number(result.count) === 0;
+  public async destroy(id: number): Promise<void> {
+    await this.examRepository.findOneOrFail(id);
+    this.examRepository.delete(id);
   }
 }

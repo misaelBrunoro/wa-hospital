@@ -13,9 +13,9 @@ export const StatusArray = [Status.active, Status.inactive];
 export const ExamTypeArray = [ExamType.clinicalAnalysis, ExamType.image];
 
 export interface IExam {
-  id: number;
+  id?: number;
   name: string;
   status: Status;
   examType: ExamType;
-  createdAt: Date;
+  createdAt?: Date;
 }

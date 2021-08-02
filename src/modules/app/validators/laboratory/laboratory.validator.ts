@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
+  IsDate,
   IsIn,
   IsInt,
   IsNotEmpty,
@@ -12,10 +13,10 @@ import { Exam } from '../../models/exam/exam.model';
 import { Type } from 'class-transformer';
 
 export class LaboratoryValidator {
+  @ApiProperty({ required: false, type: 'integer' })
   @IsOptional()
   @IsInt()
   @Min(0)
-  @ApiProperty({ required: false, type: 'integer' })
   public id?: number;
 
   @ApiProperty({
@@ -34,19 +35,21 @@ export class LaboratoryValidator {
   @IsNotEmpty()
   public address: string;
 
-  @IsNotEmpty()
   @IsString()
-  @IsIn(StatusArray, { each: true })
-  @ApiProperty({ required: true, enum: StatusArray, isArray: true })
+  @IsIn(StatusArray)
+  @ApiProperty({
+    required: true,
+    enum: [Status.active, Status.inactive],
+  })
   public status: Status;
 
-  @IsNotEmpty()
+  @IsOptional()
   @Type(() => Exam)
   @ApiProperty({ required: false, isArray: true })
   public exams?: Exam[];
 
   @IsOptional()
-  @IsInt()
+  @IsDate()
   @ApiProperty({ required: false, type: 'timestamp' })
   public createdAt?: Date;
 }

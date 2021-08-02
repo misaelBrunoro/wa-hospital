@@ -21,7 +21,7 @@ export class CreateExamTable1627598884423 implements MigrationInterface {
           },
           {
             name: 'name',
-            type: 'varchar',
+            type: 'varchar(50)',
           },
           {
             name: 'examType',

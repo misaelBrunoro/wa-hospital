@@ -1,5 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsIn, IsNotEmpty, IsString } from 'class-validator';
+import {
+  IsDate,
+  IsIn,
+  IsInt,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  Min,
+} from 'class-validator';
 import {
   Status,
   StatusArray,
@@ -9,8 +17,15 @@ import {
 
 export class ExamValidator {
   @ApiProperty({
-    type: String,
+    required: false,
+    type: 'integer',
   })
+  @IsOptional()
+  @IsInt()
+  @Min(0)
+  public id?: number;
+
+  @ApiProperty({ required: true, type: 'string', minLength: 3, maxLength: 50 })
   @IsString()
   @IsNotEmpty()
   public name: string;
@@ -30,4 +45,9 @@ export class ExamValidator {
     enum: [ExamType.clinicalAnalysis, ExamType.image],
   })
   public examType: ExamType;
+
+  @IsOptional()
+  @IsDate()
+  @ApiProperty({ required: false, type: 'timestamp' })
+  public createdAt?: Date;
 }

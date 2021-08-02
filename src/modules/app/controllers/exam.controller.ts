@@ -3,43 +3,45 @@ import {
   Controller,
   Delete,
   Get,
-  HttpCode,
   Param,
   ParseIntPipe,
   Post,
   Put,
+  ValidationPipe,
 } from '@nestjs/common';
 import { Exam } from '../../app/models/exam/exam.model';
-import { Repository } from 'typeorm';
 import { ApiNoContentResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
-import { InjectRepository } from '@nestjs/typeorm';
 import { ExamValidator } from '../validators/exam/exam.validator';
+import { ExamService } from '../services/exam.service';
 
 @ApiTags('Exam')
 @Controller('exams')
 export class ExamController {
-  constructor(
-    @InjectRepository(Exam)
-    private examRepository: Repository<Exam>,
-  ) {}
+  constructor(private examService: ExamService) {}
 
   @Get()
   @ApiOkResponse({ type: [Exam] })
   public async index(): Promise<Exam[]> {
-    return this.examRepository.find();
+    return this.examService.index();
   }
 
   @Get(':id')
   @ApiOkResponse({ type: Exam })
   public show(@Param('id', ParseIntPipe) id: number): Promise<Exam> {
-    return this.examRepository.findOneOrFail(id);
+    return this.examService.show(id);
   }
 
   @Post()
   @ApiOkResponse({ type: Exam })
-  public async store(@Body() body: ExamValidator): Promise<Exam> {
-    const exam = this.examRepository.create(body);
-    return this.examRepository.save(exam);
+  public async store(
+    @Body(
+      new ValidationPipe({
+        errorHttpStatusCode: 422,
+      }),
+    )
+    body: ExamValidator,
+  ): Promise<Exam> {
+    return this.examService.store(body);
   }
 
   @Put(':id')
@@ -48,15 +50,12 @@ export class ExamController {
     @Param('id', ParseIntPipe) id: number,
     @Body() body: Exam,
   ): Promise<Exam> {
-    await this.examRepository.findOneOrFail(id);
-    this.examRepository.update(id, body);
-    return this.examRepository.findOneOrFail(id);
+    return this.examService.update(id, body);
   }
 
   @Delete(':id')
   @ApiNoContentResponse()
   public async destroy(@Param('id', ParseIntPipe) id: number): Promise<void> {
-    await this.examRepository.findOneOrFail(id);
-    this.examRepository.delete(id);
+    this.destroy(id);
   }
 }

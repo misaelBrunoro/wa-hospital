@@ -3,8 +3,10 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { Laboratory } from '../laboratory/laboratory.model';
 import {
   IExam,
   Status,
@@ -40,6 +42,9 @@ export class Exam implements IExam {
   })
   @ApiProperty({ type: 'string' })
   examType: ExamType;
+
+  @ManyToMany(() => Laboratory, (laboratory: Laboratory) => laboratory.exams)
+  laboratoies: Laboratory[];
 
   @CreateDateColumn({
     type: 'timestamp',

@@ -1,96 +1,61 @@
-import {
-  ConflictException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
-import {
-  FindManyOptions,
-  FindOneOptions,
-  Repository,
-  UpdateResult,
-} from 'typeorm';
-import { DeleteResult } from 'typeorm/query-builder/result/DeleteResult';
-import { paginate, Pagination } from 'nestjs-typeorm-paginate';
-import { ListValidator } from '../validators/laboratory/list.validator';
+import { NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Exam } from '../models/exam/exam.model';
+import { ILaboratory } from '../models/laboratory/laboratory.interface';
 import { Laboratory } from '../models/laboratory/laboratory.model';
+import { ExamService } from './exam.service';
 
-@Injectable()
 export class LaboratoryService {
   constructor(
     @InjectRepository(Laboratory)
     private laboratoryRepository: Repository<Laboratory>,
+
+    private examService: ExamService,
   ) {}
 
-  async find(options?: FindManyOptions<Laboratory>): Promise<Laboratory[]> {
-    return this.laboratoryRepository.find(options);
+  public async index(): Promise<Laboratory[]> {
+    return this.laboratoryRepository.find();
   }
 
-  async index(query: ListValidator): Promise<Pagination<Laboratory>> {
-    const queryBuilder =
-      this.laboratoryRepository.createQueryBuilder('Laboratory');
-    queryBuilder.select(['Laboratory']);
-
-    if (query.name) {
-      queryBuilder.where(
-        `LOWER(Laboratory.name) LIKE LOWER('%${query.name}%')`,
-      );
-    }
-
-    if (!query.orderBy) query.orderBy = 'Laboratory.name';
-    if (!query.orderDirection) query.orderDirection = 'ASC';
-
-    queryBuilder.orderBy(
-      query.orderBy,
-      query.orderDirection.toUpperCase() as 'ASC' | 'DESC',
-    );
-
-    return paginate<Laboratory>(queryBuilder, {
-      page: Number(query.page) + 1,
-      limit: query.limit,
-    });
-  }
-
-  async get(
-    id: number,
-    options?: FindOneOptions<Laboratory>,
-  ): Promise<Laboratory> {
-    const laboratory = await this.laboratoryRepository.findOne(id, options);
+  public async show(id: number): Promise<Laboratory> {
+    const laboratory = this.laboratoryRepository.findOneOrFail(id);
     if (!laboratory) throw new NotFoundException('not-found');
     return laboratory;
   }
 
-  async store(laboratory: Laboratory): Promise<Laboratory> {
-    const isLaboratoryAvaliable = await this.isUniqueColumnAvailable(
-      'name',
-      laboratory.name,
-    );
-
-    if (!isLaboratoryAvaliable) throw new ConflictException('name-unavailable');
-
-    const saved = this.laboratoryRepository.save(laboratory);
-
-    return saved;
+  public async store(body: ILaboratory): Promise<Laboratory> {
+    const exams =
+      body.exams &&
+      (await Promise.all(
+        body.exams.map((exam: Exam) => this.examService.show(exam.id)),
+      ));
+    const laboratory = this.laboratoryRepository.create({
+      ...body,
+      exams,
+    });
+    return this.laboratoryRepository.save(laboratory);
   }
 
-  async destroy(id: number): Promise<DeleteResult> {
-    return this.laboratoryRepository.delete(id);
+  public async update(id: number, body: ILaboratory): Promise<Laboratory> {
+    const exams =
+      body.exams &&
+      (await Promise.all(
+        body.exams.map((exam: Exam) => this.examService.show(exam.id)),
+      ));
+    const laboratory = await this.laboratoryRepository.preload({
+      id,
+      ...body,
+      exams,
+    });
+
+    if (!laboratory) throw new NotFoundException('not-found');
+
+    return this.laboratoryRepository.save(laboratory);
   }
 
-  async update(id: number, laboratory: Laboratory): Promise<UpdateResult> {
-    return this.laboratoryRepository.update(id, laboratory);
-  }
-
-  public async isUniqueColumnAvailable(
-    column: string,
-    value: string,
-  ): Promise<boolean> {
-    const query = this.laboratoryRepository
-      .createQueryBuilder('Laboratory')
-      .select('COUNT(Laboratory.id) AS count')
-      .where(`Laboratory.${column} = :value`, { value });
-
-    const result: any = await query.getRawOne();
-    return Number(result.count) === 0;
+  public async destroy(id: number): Promise<void> {
+    await this.laboratoryRepository.findOneOrFail(id);
+    this.laboratoryRepository.delete(id);
   }
 }

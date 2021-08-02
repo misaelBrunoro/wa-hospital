@@ -2,10 +2,10 @@ import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { json, urlencoded } from 'express';
-import { ValidationPipe } from '@nestjs/common';
 import { join } from 'path';
 import { REQUEST_BODY_LIMIT, VERSION } from './settings';
 import { ApplicationModule } from './modules';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(
@@ -15,7 +15,6 @@ async function bootstrap() {
   app.enableCors();
   app.use(json({ limit: REQUEST_BODY_LIMIT }));
   app.use(urlencoded({ extended: true, limit: REQUEST_BODY_LIMIT }));
-  app.useGlobalPipes(new ValidationPipe());
 
   const swaggerOptions = new DocumentBuilder()
     .setTitle('wa hospital')

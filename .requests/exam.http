@@ -13,12 +13,12 @@ GET http://localhost:3000/exams
 
 ########
 
-GET http://localhost:3000/exams/1
+GET http://localhost:3000/exams/2
 
 
 ########
 
-PUT http://localhost:3000/exams/1
+PUT http://localhost:3000/exams/2
 Content-Type: application/json
 
 {
