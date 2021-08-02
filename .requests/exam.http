@@ -1,0 +1,31 @@
+POST http://localhost:3000/exams
+Content-Type: application/json
+
+{
+    "name": "Exame de Urina",
+    "status": "active",
+    "examType": "clinical analysis"
+}
+
+########
+
+GET http://localhost:3000/exams
+
+########
+
+GET http://localhost:3000/exams/1
+
+
+########
+
+PUT http://localhost:3000/exams/1
+Content-Type: application/json
+
+{
+    "name": "Exame Completo",
+    "status": "inactive",
+    "examType": "image"
+}
+
+########
+DELETE http://localhost:3000/exams/1

@@ -1,5 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsIn, IsNotEmpty, IsString } from 'class-validator';
+import {
+  Status,
+  StatusArray,
+  ExamType,
+  ExamTypeArray,
+} from '../../models/exam/exam.interface';
 
 export class ExamValidator {
   @ApiProperty({
@@ -7,16 +13,21 @@ export class ExamValidator {
   })
   @IsString()
   @IsNotEmpty()
-  name: string;
+  public name: string;
 
-  /*@ApiProperty({
-    type: Situation,
-  })
-  @IsEnum(Situation, { each: true })
-  situation: Situation;
-
+  @IsString()
+  @IsIn(StatusArray)
   @ApiProperty({
-    type: Discipline,
+    required: true,
+    enum: [Status.active, Status.inactive],
   })
-  disciplines: Discipline[];*/
+  public status: Status;
+
+  @IsString()
+  @IsIn(ExamTypeArray)
+  @ApiProperty({
+    required: true,
+    enum: [ExamType.clinicalAnalysis, ExamType.image],
+  })
+  public examType: ExamType;
 }

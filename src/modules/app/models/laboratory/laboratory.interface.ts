@@ -8,10 +8,10 @@ export enum Status {
 export const StatusArray = [Status.active, Status.inactive];
 
 export interface ILaboratory {
-  id: number;
+  id?: number;
   name: string;
   address: string;
   status: Status;
-  exams: Exam[];
-  createdAt: Date;
+  exams?: Exam[];
+  createdAt?: Date;
 }

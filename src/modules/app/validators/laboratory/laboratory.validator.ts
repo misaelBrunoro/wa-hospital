@@ -1,29 +1,52 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import {
+  IsIn,
+  IsInt,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  Min,
+} from 'class-validator';
+import { Status, StatusArray } from '../../models/exam/exam.interface';
+import { Exam } from '../../models/exam/exam.model';
+import { Type } from 'class-transformer';
 
 export class LaboratoryValidator {
+  @IsOptional()
+  @IsInt()
+  @Min(0)
+  @ApiProperty({ required: false, type: 'integer' })
+  public id?: number;
+
   @ApiProperty({
+    required: true,
     type: String,
   })
   @IsString()
   @IsNotEmpty()
-  name: string;
+  public name: string;
 
   @ApiProperty({
+    required: true,
     type: String,
   })
   @IsString()
   @IsNotEmpty()
-  address: string;
+  public address: string;
 
-  /*@ApiProperty({
-    type: Situation,
-  })
-  @IsEnum(Situation, { each: true })
-  situation: Situation;
+  @IsNotEmpty()
+  @IsString()
+  @IsIn(StatusArray, { each: true })
+  @ApiProperty({ required: true, enum: StatusArray, isArray: true })
+  public status: Status;
 
-  @ApiProperty({
-    type: Discipline,
-  })
-  disciplines: Discipline[];*/
+  @IsNotEmpty()
+  @Type(() => Exam)
+  @ApiProperty({ required: false, isArray: true })
+  public exams?: Exam[];
+
+  @IsOptional()
+  @IsInt()
+  @ApiProperty({ required: false, type: 'timestamp' })
+  public createdAt?: Date;
 }

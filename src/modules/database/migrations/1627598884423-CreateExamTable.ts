@@ -1,8 +1,8 @@
 import {
   Status,
   StatusArray,
-  Type,
-  TypeArray,
+  ExamType,
+  ExamTypeArray,
 } from '../../app/models/exam/exam.interface';
 import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 
@@ -24,11 +24,11 @@ export class CreateExamTable1627598884423 implements MigrationInterface {
             type: 'varchar',
           },
           {
-            name: 'type',
+            name: 'examType',
             type: 'enum',
-            enum: TypeArray,
+            enum: ExamTypeArray,
             enumName: 'type_exam_enum',
-            default: `'${Type.clinicalAnalysis}'`,
+            default: `'${ExamType.clinicalAnalysis}'`,
           },
           {
             name: 'status',
@@ -38,7 +38,7 @@ export class CreateExamTable1627598884423 implements MigrationInterface {
             default: `'${Status.active}'`,
           },
           {
-            name: 'created_at',
+            name: 'createdAt',
             type: 'timestamp',
             default: 'CURRENT_TIMESTAMP',
           },
