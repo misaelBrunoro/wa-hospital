@@ -1,7 +1,5 @@
 import { HttpAdapterHost, NestFactory } from '@nestjs/core';
-import { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { join } from 'path';
 import { SENTRY_DSN, VERSION, NODE_ENV } from './settings';
 import { ApplicationModule } from './modules';
 import { ValidationPipe } from '@nestjs/common';

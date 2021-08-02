@@ -31,9 +31,7 @@ export class Laboratory implements ILaboratory {
   })
   status: Status;
 
-  @ManyToMany((type) => Exam, (exam: Exam) => exam.laboratoies, {
-    cascade: true,
-  })
+  @ManyToMany((type) => Exam, (exam: Exam) => exam.laboratoies)
   @JoinTable()
   exams: Exam[];
 

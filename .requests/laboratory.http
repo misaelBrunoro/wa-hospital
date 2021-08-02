@@ -5,7 +5,7 @@ Content-Type: application/json
     "name": "Laboratorio Geral",
     "address": "Rua x Bairro y Numero 3",
     "status": "active",
-    "exams": [{"id": 1}]
+    "exams": [{"id": 2}]
 }
 
 ########

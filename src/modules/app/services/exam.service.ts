@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { IExam } from '../models/exam/exam.interface';
+import { IExam, Status } from '../models/exam/exam.interface';
 import { Exam } from '../models/exam/exam.model';
 
 @Injectable()
@@ -17,7 +17,7 @@ export class ExamService {
 
   public async show(id: number): Promise<Exam> {
     const exam = this.examRepository.findOneOrFail(id);
-    if (!exam) throw new NotFoundException('not-found');
+    if (!exam) throw new NotFoundException();
     return exam;
   }
 
@@ -35,5 +35,18 @@ export class ExamService {
   public async destroy(id: number): Promise<void> {
     await this.examRepository.findOneOrFail(id);
     this.examRepository.delete(id);
+  }
+
+  public async preloadActiveExams(exams: Exam[]): Promise<Exam[]> {
+    return Promise.all(
+      exams.map((exam: Exam) => {
+        return this.show(exam.id).then((exam: Exam) => {
+          console.log(exam);
+          if (exam.status === Status.active) {
+            return exam;
+          }
+        });
+      }),
+    );
   }
 }
