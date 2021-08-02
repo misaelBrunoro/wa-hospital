@@ -5,7 +5,7 @@ Content-Type: application/json
     "name": "Laboratorio Geral",
     "address": "Rua x Bairro y Numero 3",
     "status": "active",
-    "exams": [1]
+    "exams": [{"id": 1}]
 }
 
 ########
@@ -30,4 +30,4 @@ Content-Type: application/json
 }
 
 ########
-DELETE http://localhost:3000/laboratories/1
+DELETE http://localhost:3000/laboratories/2

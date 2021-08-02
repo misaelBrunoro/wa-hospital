@@ -56,6 +56,6 @@ export class ExamController {
   @Delete(':id')
   @ApiNoContentResponse()
   public async destroy(@Param('id', ParseIntPipe) id: number): Promise<void> {
-    this.destroy(id);
+    return this.examService.destroy(id);
   }
 }

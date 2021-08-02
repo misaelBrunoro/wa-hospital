@@ -3,6 +3,7 @@ import * as dotenv from 'dotenv';
 const ENV_FILE = dotenv.config().parsed || {};
 
 export const NODE_ENV = (process.env.NODE_ENV || 'production').trim();
+export const SENTRY_DSN = (process.env.SENTRY_DSN || '').trim();
 
 export const API_DNS = (process.env.API_DNS || '').trim();
 export const APP_DNS = (process.env.APP_DNS || '').trim();

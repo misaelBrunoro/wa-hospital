@@ -1,11 +1,16 @@
-import { NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Exam } from '../models/exam/exam.model';
-import { ILaboratory } from '../models/laboratory/laboratory.interface';
+import { ILaboratory, Status } from '../models/laboratory/laboratory.interface';
 import { Laboratory } from '../models/laboratory/laboratory.model';
 import { ExamService } from './exam.service';
 
+@Injectable()
 export class LaboratoryService {
   constructor(
     @InjectRepository(Laboratory)
@@ -15,11 +20,14 @@ export class LaboratoryService {
   ) {}
 
   public async index(): Promise<Laboratory[]> {
-    return this.laboratoryRepository.find();
+    const queryBuilder =
+      this.laboratoryRepository.createQueryBuilder('Laboratory');
+    queryBuilder.select(['Laboratory']).where(`status = '${Status.active}'`);
+    return queryBuilder.getRawMany();
   }
 
   public async show(id: number): Promise<Laboratory> {
-    const laboratory = this.laboratoryRepository.findOneOrFail(id);
+    const laboratory = await this.laboratoryRepository.findOneOrFail(id);
     if (!laboratory) throw new NotFoundException('not-found');
     return laboratory;
   }
@@ -55,7 +63,14 @@ export class LaboratoryService {
   }
 
   public async destroy(id: number): Promise<void> {
-    await this.laboratoryRepository.findOneOrFail(id);
-    this.laboratoryRepository.delete(id);
+    const laboratory = await this.laboratoryRepository.findOneOrFail(id);
+
+    if (!laboratory) throw new NotFoundException();
+
+    if (laboratory.status === Status.active) {
+      this.laboratoryRepository.delete(id);
+    } else {
+      throw new ForbiddenException('Laboratory is not active');
+    }
   }
 }

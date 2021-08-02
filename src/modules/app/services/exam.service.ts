@@ -1,9 +1,10 @@
-import { NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { IExam } from '../models/exam/exam.interface';
 import { Exam } from '../models/exam/exam.model';
 
+@Injectable()
 export class ExamService {
   constructor(
     @InjectRepository(Exam)

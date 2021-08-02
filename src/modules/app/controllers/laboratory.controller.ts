@@ -56,6 +56,6 @@ export class LaboratoryController {
   @Delete(':id')
   @ApiNoContentResponse()
   public async destroy(@Param('id', ParseIntPipe) id: number): Promise<void> {
-    this.laboratoryService.destroy(id);
+    return this.laboratoryService.destroy(id);
   }
 }
