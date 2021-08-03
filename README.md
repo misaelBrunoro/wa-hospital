@@ -25,3 +25,7 @@ yarn install # ou npm install
 # Ele aplicará as migrations do banco e depois dará watch nos arquivos
 # e iniciará o node com a api
 ```
+
+### Documentação
+
+http://localhost:3000/swagger/
