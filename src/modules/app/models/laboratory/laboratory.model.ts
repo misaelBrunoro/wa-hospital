@@ -40,6 +40,7 @@ export class Laboratory implements ILaboratory {
     onDelete: 'CASCADE',
   })
   @JoinTable()
+  @ApiProperty({ type: Exam, isArray: true })
   exams: Exam[];
 
   @CreateDateColumn({

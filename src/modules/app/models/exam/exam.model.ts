@@ -46,6 +46,7 @@ export class Exam implements IExam {
   @ManyToMany(() => Laboratory, (laboratory: Laboratory) => laboratory.exams, {
     onDelete: 'CASCADE',
   })
+  @ApiProperty({ type: Laboratory, isArray: true })
   laboratories: Laboratory[];
 
   @CreateDateColumn({
