@@ -44,20 +44,21 @@ export class LaboratoryService {
     if (body.exams) {
       exams = await this.examService.preloadActiveExams(body.exams);
     }
+
     if (id) {
       laboratory = await this.laboratoryRepository.preload({
         id,
         ...body,
         exams,
       });
-
-      if (!laboratory) throw new NotFoundException();
     } else {
       laboratory = await this.laboratoryRepository.create({
         ...body,
         exams,
       });
     }
+
+    if (!laboratory) throw new NotFoundException();
 
     return this.laboratoryRepository.save(laboratory);
   }

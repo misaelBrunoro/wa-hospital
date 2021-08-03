@@ -44,6 +44,9 @@ export class ExamService {
     } else {
       exam = this.examRepository.create(body);
     }
+
+    if (!exam) throw new NotFoundException();
+
     return this.examRepository.save(exam);
   }
 
