@@ -1,33 +1,31 @@
+// SALVA UM LABORATORIO E VINCULA UM EXAME EXISTENTE
 POST http://localhost:3000/laboratories
 Content-Type: application/json
 
 {
-    "name": "Laboratorio Geral",
+    "name": "Laboratorio X",
     "address": "Rua x Bairro y Numero 3",
     "status": "active",
-    "exams": [{"id": 2}]
-}
-
-########
-
-GET http://localhost:3000/laboratories
-
-########
-
-GET http://localhost:3000/laboratories/2
-
-
-########
-
-PUT http://localhost:3000/laboratories/2
-Content-Type: application/json
-
-{
-    "name": "Laboratorio Geral",
-    "address": "Rua y Bairro x Numero 3",
-    "status": "inactive",
     "exams": [{"id": 1}]
 }
 
 ########
-DELETE http://localhost:3000/laboratories/2
+// BUSCA LABORATORIOS ATIVOS
+GET http://localhost:3000/laboratories
+
+########
+
+GET http://localhost:3000/laboratories/1
+
+
+########
+
+PUT http://localhost:3000/laboratories/1
+Content-Type: application/json
+
+{
+    "exams": [{"id": 1}, {"id": 2}]
+}
+
+########
+DELETE http://localhost:3000/laboratories/1

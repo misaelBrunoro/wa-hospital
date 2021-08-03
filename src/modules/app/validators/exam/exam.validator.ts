@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import {
   IsDate,
   IsIn,
@@ -14,6 +15,7 @@ import {
   ExamType,
   ExamTypeArray,
 } from '../../models/exam/exam.interface';
+import { Laboratory } from '../../models/laboratory/laboratory.model';
 
 export class ExamValidator {
   @ApiProperty({
@@ -47,7 +49,12 @@ export class ExamValidator {
   public examType: ExamType;
 
   @IsOptional()
+  @Type(() => Laboratory)
+  @ApiProperty({ required: false, isArray: true, type: Laboratory })
+  public laboratories?: Laboratory[];
+
+  @IsOptional()
   @IsDate()
-  @ApiProperty({ required: false, type: 'timestamp' })
+  @ApiProperty({ required: false, type: 'string', format: 'date-time' })
   public createdAt?: Date;
 }

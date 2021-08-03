@@ -45,11 +45,11 @@ export class LaboratoryValidator {
 
   @IsOptional()
   @Type(() => Exam)
-  @ApiProperty({ required: false, isArray: true })
+  @ApiProperty({ required: false, isArray: true, type: Exam })
   public exams?: Exam[];
 
   @IsOptional()
   @IsDate()
-  @ApiProperty({ required: false, type: 'timestamp' })
+  @ApiProperty({ required: false, type: 'string', format: 'date-time' })
   public createdAt?: Date;
 }

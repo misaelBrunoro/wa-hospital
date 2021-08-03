@@ -43,8 +43,10 @@ export class Exam implements IExam {
   @ApiProperty({ type: 'string' })
   examType: ExamType;
 
-  @ManyToMany(() => Laboratory, (laboratory: Laboratory) => laboratory.exams)
-  laboratoies: Laboratory[];
+  @ManyToMany(() => Laboratory, (laboratory: Laboratory) => laboratory.exams, {
+    onDelete: 'CASCADE',
+  })
+  laboratories: Laboratory[];
 
   @CreateDateColumn({
     type: 'timestamp',

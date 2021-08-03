@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import {
   Column,
   CreateDateColumn,
@@ -12,11 +13,13 @@ import { ILaboratory, Status, StatusArray } from './laboratory.interface';
 @Entity()
 export class Laboratory implements ILaboratory {
   @PrimaryGeneratedColumn()
+  @ApiProperty({ type: 'integer' })
   id: number;
 
   @Column({
     nullable: false,
   })
+  @ApiProperty({ type: 'string' })
   name: string;
 
   @Column({
@@ -29,9 +32,13 @@ export class Laboratory implements ILaboratory {
     enum: StatusArray,
     default: `{${Status.active}}`,
   })
+  @ApiProperty({ type: 'string' })
   status: Status;
 
-  @ManyToMany((type) => Exam, (exam: Exam) => exam.laboratoies)
+  @ManyToMany(() => Exam, (exam: Exam) => exam.laboratories, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
   @JoinTable()
   exams: Exam[];
 
@@ -39,6 +46,7 @@ export class Laboratory implements ILaboratory {
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP(6)',
   })
+  @ApiProperty({ type: 'string', format: 'date-time' })
   public createdAt: Date;
 
   constructor(partial?: Partial<Laboratory>) {

@@ -1,3 +1,5 @@
+import { Laboratory } from '../laboratory/laboratory.model';
+
 export enum ExamType {
   clinicalAnalysis = 'clinical analysis',
   image = 'image',
@@ -17,5 +19,6 @@ export interface IExam {
   name: string;
   status: Status;
   examType: ExamType;
+  laboratories?: Laboratory[];
   createdAt?: Date;
 }

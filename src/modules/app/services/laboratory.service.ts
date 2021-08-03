@@ -18,46 +18,52 @@ export class LaboratoryService {
   ) {}
 
   public async index(): Promise<Laboratory[]> {
-    const queryBuilder =
-      this.laboratoryRepository.createQueryBuilder('Laboratory');
-    queryBuilder.select(['Laboratory']).where(`status = '${Status.active}'`);
-    return queryBuilder.getRawMany();
+    return this.laboratoryRepository
+      .createQueryBuilder('laboratory')
+      .where(`laboratory.status = '${Status.active}'`)
+      .leftJoinAndSelect('laboratory.exams', 'exam')
+      .getMany();
   }
 
   public async show(id: number): Promise<Laboratory> {
-    const laboratory = await this.laboratoryRepository.findOneOrFail(id);
-    if (!laboratory) throw new NotFoundException('not-found');
+    const laboratory = await this.laboratoryRepository
+      .createQueryBuilder('laboratory')
+      .where(
+        `laboratory.status = '${Status.active}' and laboratory.id = '${id}'`,
+      )
+      .leftJoinAndSelect('laboratory.exams', 'exam')
+      .getOne();
+    if (!laboratory) throw new NotFoundException();
     return laboratory;
   }
 
-  public async store(body: ILaboratory): Promise<Laboratory> {
-    const exams =
-      body.exams && (await this.examService.preloadActiveExams(body.exams));
-    const laboratory = this.laboratoryRepository.create({
-      ...body,
-      exams,
-    });
-    return this.laboratoryRepository.save(laboratory);
-  }
-
-  public async update(id: number, body: ILaboratory): Promise<Laboratory> {
+  public async store(body: ILaboratory, id?: number): Promise<Laboratory> {
     let exams = [];
+    let laboratory: Laboratory;
+
     if (body.exams) {
       exams = await this.examService.preloadActiveExams(body.exams);
     }
-    const laboratory = await this.laboratoryRepository.preload({
-      id,
-      ...body,
-      exams,
-    });
+    if (id) {
+      laboratory = await this.laboratoryRepository.preload({
+        id,
+        ...body,
+        exams,
+      });
 
-    if (!laboratory) throw new NotFoundException();
+      if (!laboratory) throw new NotFoundException();
+    } else {
+      laboratory = await this.laboratoryRepository.create({
+        ...body,
+        exams,
+      });
+    }
 
     return this.laboratoryRepository.save(laboratory);
   }
 
   public async destroy(id: number): Promise<void> {
-    const laboratory = await this.laboratoryRepository.findOneOrFail(id);
+    const laboratory = await this.laboratoryRepository.findOne(id);
 
     if (!laboratory) throw new NotFoundException();
 

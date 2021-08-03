@@ -13,7 +13,7 @@ GET http://localhost:3000/exams
 
 ########
 
-GET http://localhost:3000/exams/2
+GET http://localhost:3000/exams/1
 
 
 ########
@@ -23,7 +23,7 @@ Content-Type: application/json
 
 {
     "name": "Exame Completo",
-    "status": "inactive",
+    "status": "active",
     "examType": "image"
 }
 

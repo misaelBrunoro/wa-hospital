@@ -24,11 +24,13 @@ export class CreateLaboratoryExamTable1627598953428
             columnNames: ['laboratoryId'],
             referencedColumnNames: ['id'],
             referencedTableName: 'laboratory',
+            onDelete: 'CASCADE',
           },
           {
             columnNames: ['examId'],
             referencedColumnNames: ['id'],
             referencedTableName: 'exam',
+            onDelete: 'CASCADE',
           },
         ],
       }),
