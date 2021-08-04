@@ -13,17 +13,17 @@ Content-Type: application/json
         "name": "Laboratorio Z",
         "address": "Rua x Bairro y Numero 3",
         "status": "active",
-        "exams": [{"id": 1}]
+        "exams": [{"id": 2}]
     },
     {
         "name": "Laboratorio H",
         "address": "Rua x Bairro y Numero 3",
-        "status": "active",
-        "exams": [{"id": 1}]
+        "status": "inactive",
+        "exams": [{"id": 3}]
     }
 ]
 
-// EDITA UM LABORATORIO OU LABORATORIOS EM LOTE
+// EDITA UM LABORATORIO OU LABORATORIOS EM LOTE VINCULA E DESVINCULA EXAMES
 ######
 POST http://localhost:3000/laboratories
 Content-Type: application/json

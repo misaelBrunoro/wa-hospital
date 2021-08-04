@@ -42,7 +42,7 @@ export class LaboratoryController {
   @ApiOperation({
     summary:
       'create and update one or more laboratories with or without linked exams.' +
-      'Link exams to laboratories.',
+      'Link and unlink exams to laboratories.',
   })
   public async store(
     @Body(

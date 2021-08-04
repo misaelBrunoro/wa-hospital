@@ -20,6 +20,8 @@ Utilize o VSCode, instale o Rest Client https://marketplace.visualstudio.com/ite
 git clone https://github.com/misaelBrunoro/wa-hospital.git
 yarn install # ou npm install
 
+Faça uma cópia do arquivo .env.example com o nome de .env
+
 [sudo] docker-componse up
 # levantará o docker com o banco de dados e a aplicação.
 # Ele aplicará as migrations do banco e depois dará watch nos arquivos

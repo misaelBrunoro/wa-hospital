@@ -56,7 +56,7 @@ GET http://localhost:3000/exams/1
 
 // BUSCA UM EXAME ATIVO PELO NOME E RETORNA OS LABORATORIOS
 ########
-GET http://localhost:3000/exams/byName?name=Exame+de+Cafe
+GET http://localhost:3000/exams/byName?name=Exame+de+F
 
 
 // DELETA UM EXAME OU EXAMES EM LOTE
