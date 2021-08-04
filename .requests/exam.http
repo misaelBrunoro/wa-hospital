@@ -22,7 +22,7 @@ Content-Type: application/json
 
 // EDITA UM EXAME OU EXAMES EM LOTE
 ####
-POST http://localhost:3000/laboratories
+POST http://localhost:3000/exams
 Content-Type: application/json
 
 [
