@@ -1,31 +1,70 @@
-// SALVA UM LABORATORIO E VINCULA UM EXAME EXISTENTE
+// SALVA LABORATORIOS EM LOTE VINCULA (SE ENVIADO) EXAMES EXISTENTES
 POST http://localhost:3000/laboratories
 Content-Type: application/json
 
-{
-    "name": "Laboratorio X",
-    "address": "Rua x Bairro y Numero 3",
-    "status": "active",
-    "exams": [{"id": 1}]
-}
+[
+    {
+        "name": "Laboratorio X",
+        "address": "Rua x Bairro y Numero 3",
+        "status": "active",
+        "exams": [{"id": 1}]
+    },
+    {
+        "name": "Laboratorio Z",
+        "address": "Rua x Bairro y Numero 3",
+        "status": "active",
+        "exams": [{"id": 1}]
+    },
+    {
+        "name": "Laboratorio H",
+        "address": "Rua x Bairro y Numero 3",
+        "status": "active",
+        "exams": [{"id": 1}]
+    }
+]
 
-########
-// BUSCA LABORATORIOS ATIVOS
-GET http://localhost:3000/laboratories
-
-########
-
-GET http://localhost:3000/laboratories/1
-
-
-########
-
-PUT http://localhost:3000/laboratories/1
+// EDITA UM LABORATORIO OU LABORATORIOS EM LOTE
+######
+POST http://localhost:3000/laboratories
 Content-Type: application/json
 
-{
-    "exams": [{"id": 1}, {"id": 2}]
-}
+[
+    {
+        "id": 1,
+        "exams": [{"id": 1}]
+    },
+    {
+        "id": 2,
+        "exams": [{"id": 1}]
+    },
+    {
+        "id": 3,
+        "exams": [{"id": 1}]
+    }
+]
 
-########
-DELETE http://localhost:3000/laboratories/1
+// BUSCA LABORATORIOS ATIVOS
+######
+GET http://localhost:3000/laboratories
+
+
+// BUSCA UM LABORATORIO ATIVO ESPECIFICO
+######
+GET http://localhost:3000/laboratories/1
+
+// DELETA UM LABORATORIO OU LABORATORIOS EM LOTE
+######
+DELETE http://localhost:3000/laboratories
+Content-Type: application/json
+
+[
+    {
+        "id": 1
+    },
+    {
+        "id": 2
+    },
+    {
+        "id": 3
+    }
+]

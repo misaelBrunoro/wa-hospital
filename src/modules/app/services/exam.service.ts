@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ForbiddenException,
   Injectable,
   NotFoundException,
@@ -33,33 +34,48 @@ export class ExamService {
     return exam;
   }
 
-  public async store(body: IExam, id?: number): Promise<Exam> {
-    let exam: Exam;
+  public async store(body: IExam[]): Promise<Exam[]> {
+    const exams: Exam[] = [];
 
-    if (id) {
-      exam = await this.examRepository.preload({
-        id,
-        ...body,
-      });
-    } else {
-      exam = this.examRepository.create(body);
-    }
+    await Promise.all(
+      body.map(async (ex: Exam) => {
+        let exam: Exam;
 
-    if (!exam) throw new NotFoundException();
+        if (ex.id) {
+          exam = await this.examRepository.preload({
+            ...ex,
+          });
+        } else {
+          exam = await this.examRepository.create(ex);
+        }
 
-    return this.examRepository.save(exam);
+        if (!exam) throw new NotFoundException();
+
+        exams.push(await this.examRepository.save(exam));
+      }),
+    );
+
+    return exams;
   }
 
-  public async destroy(id: number): Promise<void> {
-    const exam = await this.examRepository.findOne(id);
+  public async destroy(body: IExam[]): Promise<void> {
+    await Promise.all(
+      body.map(async (ex: Exam) => {
+        if (ex.id) {
+          const exam = await this.examRepository.findOne(ex.id);
 
-    if (!exam) throw new NotFoundException();
+          if (!exam) throw new NotFoundException();
 
-    if (exam.status === Status.active) {
-      this.examRepository.delete(id);
-    } else {
-      throw new ForbiddenException('Exam is not active');
-    }
+          if (exam.status === Status.active) {
+            this.examRepository.delete(ex.id);
+          } else {
+            throw new ForbiddenException('Exam is not active');
+          }
+        } else {
+          throw new BadRequestException('One or more Exams dont have id');
+        }
+      }),
+    );
   }
 
   public async preloadActiveExams(exams: Exam[]): Promise<Exam[]> {
@@ -72,5 +88,15 @@ export class ExamService {
         });
       }),
     );
+  }
+
+  public async findByName(name: string) {
+    const exam = await this.examRepository
+      .createQueryBuilder('exam')
+      .where(`exam.name LIKE '%${name}%'`)
+      .leftJoinAndSelect('exam.laboratories', 'laboratory')
+      .getOne();
+    if (!exam) throw new NotFoundException();
+    return exam;
   }
 }

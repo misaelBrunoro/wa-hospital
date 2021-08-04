@@ -6,7 +6,7 @@ import {
   Param,
   ParseIntPipe,
   Post,
-  Put,
+  Query,
   ValidationPipe,
 } from '@nestjs/common';
 import { Exam } from '../../app/models/exam/exam.model';
@@ -18,17 +18,21 @@ import {
 } from '@nestjs/swagger';
 import { ExamValidator } from '../validators/exam/exam.validator';
 import { ExamService } from '../services/exam.service';
+import { ExamNameValidator } from '../validators/exam/exam-name.validator';
 
 @ApiTags('Exam')
 @Controller('exams')
 export class ExamController {
   constructor(private examService: ExamService) {}
 
-  @Get()
-  @ApiOkResponse({ type: [Exam] })
-  @ApiOperation({ summary: 'find all active exams.' })
-  public async index(): Promise<Exam[]> {
-    return this.examService.index();
+  @Get('/byName')
+  @ApiOkResponse({ type: Exam })
+  @ApiOperation({
+    summary: 'find one active exam by name and return laboratories.',
+  })
+  public findByName(@Query() query: ExamNameValidator): Promise<Exam> {
+    console.log(query);
+    return this.examService.findByName(query.name);
   }
 
   @Get(':id')
@@ -38,34 +42,31 @@ export class ExamController {
     return this.examService.show(id);
   }
 
+  @Get()
+  @ApiOkResponse({ type: [Exam] })
+  @ApiOperation({ summary: 'find all active exams.' })
+  public async index(): Promise<Exam[]> {
+    return this.examService.index();
+  }
+
   @Post()
-  @ApiOkResponse({ type: Exam })
-  @ApiOperation({ summary: 'create an exam.' })
+  @ApiOkResponse({ type: [Exam] })
+  @ApiOperation({ summary: 'create and update one or more exams.' })
   public async store(
     @Body(
       new ValidationPipe({
         errorHttpStatusCode: 422,
       }),
     )
-    body: ExamValidator,
-  ): Promise<Exam> {
+    body: ExamValidator[],
+  ): Promise<Exam[]> {
     return this.examService.store(body);
   }
 
-  @Put(':id')
-  @ApiOkResponse({ type: Exam })
-  @ApiOperation({ summary: 'update an exam.' })
-  public async update(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() body: Exam,
-  ): Promise<Exam> {
-    return this.examService.store(body, id);
-  }
-
-  @Delete(':id')
+  @Delete()
   @ApiNoContentResponse()
-  @ApiOperation({ summary: 'delete an active exam.' })
-  public async destroy(@Param('id', ParseIntPipe) id: number): Promise<void> {
-    return this.examService.destroy(id);
+  @ApiOperation({ summary: 'delete one or more active exams.' })
+  public async destroy(@Body() body: ExamValidator[]): Promise<void> {
+    return this.examService.destroy(body);
   }
 }

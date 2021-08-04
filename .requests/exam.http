@@ -1,31 +1,77 @@
+// SALVA UM EXAME OU EXAMES EM LOTE
 POST http://localhost:3000/exams
 Content-Type: application/json
 
-{
-    "name": "Exame de Urina",
-    "status": "active",
-    "examType": "clinical analysis"
-}
+[
+    {
+        "name": "Exame de Cafe",
+        "status": "active",
+        "examType": "clinical analysis"
+    },
+     {
+        "name": "Exame de Fezes",
+        "status": "active",
+        "examType": "image"
+    },
+    {
+        "name": "Exame Geral",
+        "status": "active",
+        "examType": "clinical analysis"
+    }
+]
 
-########
-
-GET http://localhost:3000/exams
-
-########
-
-GET http://localhost:3000/exams/1
-
-
-########
-
-PUT http://localhost:3000/exams/2
+// EDITA UM EXAME OU EXAMES EM LOTE
+####
+POST http://localhost:3000/laboratories
 Content-Type: application/json
 
-{
-    "name": "Exame Completo",
-    "status": "active",
-    "examType": "image"
-}
+[
+    {
+        "id": 1,
+        "name": "Exame de F",
+        "status": "active",
+        "examType": "image"
+    },
+     {
+        "id": 2,
+        "name": "Exame de G",
+        "status": "inactive",
+        "examType": "image"
+    },
+    {
+        "id": 3,
+        "name": "Exame H",
+        "status": "active",
+        "examType": "clinical analysis"
+    }
+]
 
+// BUSCA TODOS OS EXAMES ATIVOS
 ########
-DELETE http://localhost:3000/exams/1
+GET http://localhost:3000/exams
+
+// BUSCA UM EXAME ATIVO ESPECIFICO
+########
+GET http://localhost:3000/exams/1
+
+// BUSCA UM EXAME ATIVO PELO NOME E RETORNA OS LABORATORIOS
+########
+GET http://localhost:3000/exams/byName?name=Exame+de+Cafe
+
+
+// DELETA UM EXAME OU EXAMES EM LOTE
+########
+DELETE http://localhost:3000/exams
+Content-Type: application/json
+
+[
+    {
+        "id": 1
+    },
+     {
+        "id": 2
+    },
+    {
+        "id": 3
+    }
+]

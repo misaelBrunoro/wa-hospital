@@ -6,7 +6,6 @@ import {
   Param,
   ParseIntPipe,
   Post,
-  Put,
   ValidationPipe,
 } from '@nestjs/common';
 import {
@@ -39,9 +38,11 @@ export class LaboratoryController {
   }
 
   @Post()
-  @ApiOkResponse({ type: Laboratory })
+  @ApiOkResponse({ type: [Laboratory] })
   @ApiOperation({
-    summary: 'create an laboratory with or without linked exams.',
+    summary:
+      'create and update one or more laboratories with or without linked exams.' +
+      'Link exams to laboratories.',
   })
   public async store(
     @Body(
@@ -49,29 +50,17 @@ export class LaboratoryController {
         errorHttpStatusCode: 422,
       }),
     )
-    body: LaboratoryValidator,
-  ): Promise<Laboratory> {
+    body: LaboratoryValidator[],
+  ): Promise<Laboratory[]> {
     return this.laboratoryService.store(body);
   }
 
-  @Put(':id')
-  @ApiOkResponse({ type: Laboratory })
-  @ApiOperation({
-    summary: 'update an laboratory, links and unlinks exams.',
-  })
-  public async update(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() body: Laboratory,
-  ): Promise<Laboratory> {
-    return this.laboratoryService.store(body, id);
-  }
-
-  @Delete(':id')
+  @Delete()
   @ApiNoContentResponse()
   @ApiOperation({
-    summary: 'delete an active laboratory.',
+    summary: 'delete one or more active laboratories.',
   })
-  public async destroy(@Param('id', ParseIntPipe) id: number): Promise<void> {
-    return this.laboratoryService.destroy(id);
+  public async destroy(@Body() body: LaboratoryValidator[]): Promise<void> {
+    return this.laboratoryService.destroy(body);
   }
 }

@@ -1,3 +1,4 @@
+import { BadRequestException } from '@nestjs/common';
 import {
   ForbiddenException,
   Injectable,
@@ -37,41 +38,58 @@ export class LaboratoryService {
     return laboratory;
   }
 
-  public async store(body: ILaboratory, id?: number): Promise<Laboratory> {
-    let exams = [];
-    let laboratory: Laboratory;
+  public async store(body: ILaboratory[]): Promise<Laboratory[]> {
+    const laboratories: Laboratory[] = [];
 
-    if (body.exams) {
-      exams = await this.examService.preloadActiveExams(body.exams);
-    }
+    await Promise.all(
+      body.map(async (lab: Laboratory) => {
+        let exams = [];
+        let laboratory: Laboratory;
 
-    if (id) {
-      laboratory = await this.laboratoryRepository.preload({
-        id,
-        ...body,
-        exams,
-      });
-    } else {
-      laboratory = await this.laboratoryRepository.create({
-        ...body,
-        exams,
-      });
-    }
+        if (lab.exams) {
+          exams = await this.examService.preloadActiveExams(lab.exams);
+        }
 
-    if (!laboratory) throw new NotFoundException();
+        if (lab.id) {
+          laboratory = await this.laboratoryRepository.preload({
+            ...lab,
+            exams,
+          });
+        } else {
+          laboratory = await this.laboratoryRepository.create({
+            ...lab,
+            exams,
+          });
+        }
 
-    return this.laboratoryRepository.save(laboratory);
+        if (!laboratory) throw new NotFoundException();
+
+        laboratories.push(await this.laboratoryRepository.save(laboratory));
+      }),
+    );
+
+    return laboratories;
   }
 
-  public async destroy(id: number): Promise<void> {
-    const laboratory = await this.laboratoryRepository.findOne(id);
+  public async destroy(body: ILaboratory[]): Promise<void> {
+    await Promise.all(
+      body.map(async (lab: Laboratory) => {
+        if (lab.id) {
+          const laboratory = await this.laboratoryRepository.findOne(lab.id);
 
-    if (!laboratory) throw new NotFoundException();
+          if (!laboratory) throw new NotFoundException();
 
-    if (laboratory.status === Status.active) {
-      this.laboratoryRepository.delete(id);
-    } else {
-      throw new ForbiddenException('Laboratory is not active');
-    }
+          if (laboratory.status === Status.active) {
+            this.laboratoryRepository.delete(lab.id);
+          } else {
+            throw new ForbiddenException('Laboratory is not active');
+          }
+        } else {
+          throw new BadRequestException(
+            'One or more Laboratories dont have id',
+          );
+        }
+      }),
+    );
   }
 }
