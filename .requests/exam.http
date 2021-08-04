@@ -4,7 +4,7 @@ Content-Type: application/json
 
 [
     {
-        "name": "Exame de Cafe",
+        "name": "Exame de Urina",
         "status": "active",
         "examType": "clinical analysis"
     },
