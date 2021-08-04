@@ -69,7 +69,9 @@ export class ExamService {
           if (exam.status === Status.active) {
             this.examRepository.delete(ex.id);
           } else {
-            throw new ForbiddenException('Exam is not active');
+            throw new ForbiddenException(
+              'Exam with id is not active: ' + ex.id,
+            );
           }
         } else {
           throw new BadRequestException('One or more Exams dont have id');

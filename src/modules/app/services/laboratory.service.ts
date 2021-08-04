@@ -82,7 +82,9 @@ export class LaboratoryService {
           if (laboratory.status === Status.active) {
             this.laboratoryRepository.delete(lab.id);
           } else {
-            throw new ForbiddenException('Laboratory is not active');
+            throw new ForbiddenException(
+              'Laboratory with id is not active: ' + lab.id,
+            );
           }
         } else {
           throw new BadRequestException(
