@@ -9,7 +9,7 @@ Content-Type: application/json
         "examType": "clinical analysis"
     },
      {
-        "name": "Exame de Fezes",
+        "name": "Exame de Cabeça",
         "status": "active",
         "examType": "image"
     },
