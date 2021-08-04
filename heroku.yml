@@ -1,6 +1,4 @@
-version: '2'
-
-services:
+build:
   web:
     container_name: wahospital-api
     build: docker/dev
